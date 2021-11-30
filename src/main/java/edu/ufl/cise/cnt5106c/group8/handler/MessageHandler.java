@@ -223,7 +223,7 @@ public class MessageHandler{
 
         if (hasCompleteFile(bitField)) {
             try {
-                FileManager.assembleFile(filePieceMap, "thefile");
+                FileManager.assembleFile(filePieceMap, localPeer.getCommon().getFileName());
                 localPeer.setHasFile(true);
             } catch (IOException e) {
                 e.printStackTrace();

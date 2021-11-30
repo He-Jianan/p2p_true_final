@@ -43,8 +43,8 @@ public class CommonReader {
                 }
             }
             in.close();
-            totalPieces = (int) Math.ceil(fileSize/pieceSize);
-            int totalLength = (int) Math.ceil(totalPieces/8) * 8;
+            totalPieces = (int) Math.ceil((double) fileSize/(double) pieceSize);
+            int totalLength = (int) Math.ceil((double) totalPieces/8) * 8;
 //            if (fileSize % pieceSize == 0) {
 //                totalPieces = fileSize/pieceSize;
 //            } else {
