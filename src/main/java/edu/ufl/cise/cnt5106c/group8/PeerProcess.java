@@ -4,6 +4,7 @@ import edu.ufl.cise.cnt5106c.group8.communication.ReceiveCommunication;
 import edu.ufl.cise.cnt5106c.group8.communication.SendCommunication;
 import edu.ufl.cise.cnt5106c.group8.config.CommonReader;
 import edu.ufl.cise.cnt5106c.group8.config.PeerInfoReader;
+import edu.ufl.cise.cnt5106c.group8.manager.ChoiceManager;
 import edu.ufl.cise.cnt5106c.group8.manager.FileManager;
 import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 import edu.ufl.cise.cnt5106c.group8.model.Common;
@@ -45,6 +46,10 @@ public class PeerProcess {
         peer.setLocalInterestedRemoteMap(localInterestedRemoteMap);
         ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = new ConcurrentHashMap<>();
         peer.setPieceIndexMap(pieceIndexMap);
+        ConcurrentMap<String, Integer> downloadRateMap = new ConcurrentHashMap<>();
+        peer.setDownloadRateMap(downloadRateMap);
+        List<Integer> requestList = new ArrayList<>();
+        peer.setRequestList(requestList);
         for (PeerInfo peerInfo : peerInfoList) {
             LinkedBlockingQueue<MessageManager> messageQueue = new LinkedBlockingQueue<>();
             messageQueueMap.put(peerInfo.getPeerId(), messageQueue);
@@ -66,7 +71,7 @@ public class PeerProcess {
                 }
                 peer.setBitField(bitField);
                 peerInfoList.remove(peerInfo);
-                break;
+                continue;
             }
 
             ConcurrentMap<Integer, Boolean> map = new ConcurrentHashMap<>();
@@ -80,7 +85,13 @@ public class PeerProcess {
             peer.setLocalChokeRemoteMap(localChokeRemoteMap);
             localInterestedRemoteMap.put(peerInfo.getPeerId(), false);
             peer.setLocalInterestedRemoteMap(localInterestedRemoteMap);
+            downloadRateMap.put(peerInfo.getPeerId(), 0);
+            peer.setDownloadRateMap(downloadRateMap);
         }
+        peer.setPeerInfoList(peerInfoList);
+
+        ChoiceManager choiceManager = new ChoiceManager(peer);
+        choiceManager.start();
 
 
         for (PeerInfo peerInfo : peerInfoList) {

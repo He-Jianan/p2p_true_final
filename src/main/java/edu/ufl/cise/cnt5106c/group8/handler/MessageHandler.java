@@ -9,6 +9,7 @@ import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.model.PieceMessage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -94,9 +95,21 @@ public class MessageHandler{
         ConcurrentMap<String, Boolean> chokeMap = localPeer.getRemoteChokeLocalMap();
         chokeMap.put(remotePeerId, false);
         localPeer.setRemoteChokeLocalMap(chokeMap);
-        //TODO: Send a request message
+        char[] bitField = localPeer.getBitField();
+        ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> remoteBitFieldMap = localPeer.getPieceIndexMap();
+        ConcurrentMap<Integer, Boolean> currBitField = remoteBitFieldMap.get(remotePeerId);
+        ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
+        for (int idx = 0; idx < bitField.length; ++idx) {
+            if (bitField[idx] == '0' && currBitField.getOrDefault(idx, Boolean.FALSE)) {
+                messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(idx)), false));
+                //TODO: add dm.requestList
 
+
+                break;
+            }
+        }
     }
+
 
     public void handleInterestedMessage(ActualMessage message) {
         System.out.println(remotePeerId + " is interested in " + localPeer.getPeerId());
@@ -119,7 +132,6 @@ public class MessageHandler{
         ConcurrentMap<Integer, Boolean> map = pieceIndexMap.get(remotePeerId);
         map.put(pieceIndex, true);
         localPeer.setPieceIndexMap(pieceIndexMap);
-        //TODO:
         if (!localPeer.getLocalInterestedRemoteMap().get(remotePeerId) && localPeer.getBitField()[pieceIndex] == '0') {
             ConcurrentMap<String, Boolean> localInterestedRemoteMap = localPeer.getLocalInterestedRemoteMap();
             localInterestedRemoteMap.put(remotePeerId, true);
@@ -152,7 +164,35 @@ public class MessageHandler{
     }
 
     public void handlePieceMessage(ActualMessage message) {
+        PieceMessage pieceMessage = (PieceMessage) message;
+        String rawIndex = pieceMessage.getIndex();
+        int index = Integer.parseInt(rawIndex);
+        String currPiece = message.getMessagePayload();
+        byte[] currBytes = currPiece.getBytes();
+        ConcurrentMap<Integer, byte[]> filePieceMap = localPeer.getFilePieceMap();
+        filePieceMap.put(index, currBytes);
+        localPeer.setFilePieceMap(filePieceMap);
+        char[] bitField = localPeer.getBitField();
+        bitField[index] = '1';
+        localPeer.setBitField(bitField);
+        ConcurrentMap<String, Integer> downloadRateMap = localPeer.getDownloadRateMap();
+        int downloadRate = downloadRateMap.get(remotePeerId);
+        downloadRateMap.put(remotePeerId, downloadRate + 1);
+        localPeer.setDownloadRateMap(downloadRateMap);
 
+        ConcurrentMap<String, Boolean> currInterestMap = localPeer.getLocalInterestedRemoteMap();
+        ConcurrentMap<String, Boolean> currChokeMap = localPeer.getLocalChokeRemoteMap();
+        Map<String, Boolean> currConnMap = localPeer.getConnectStatusMap();
+        ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
+        //TODO: add request list
+        List<Integer> requestList = localPeer.getRequestList();
+
+        for (Map.Entry<String, Boolean> entry : currInterestMap.entrySet()) {
+            String remoteId = entry.getKey();
+            if ((!currChokeMap.get(remoteId)) && (currConnMap.get(remoteId))) {
+                messageQueueMap.get(remoteId).add(new MessageManager(new ActualMessage(MessageTypeEnum.HAVE, rawIndex), false));
+            }
+        }
     }
 
 }

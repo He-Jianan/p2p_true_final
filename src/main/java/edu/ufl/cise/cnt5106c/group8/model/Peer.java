@@ -2,6 +2,7 @@ package edu.ufl.cise.cnt5106c.group8.model;
 
 import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,6 +35,14 @@ public class Peer {
     private ConcurrentMap<String, Boolean> localInterestedRemoteMap;
 
     private ConcurrentMap<Integer, byte[]> filePieceMap;
+
+    private ConcurrentMap<String, Integer> downloadRateMap;
+
+    private List<PeerInfo> peerInfoList;
+
+    private List<Integer> requestList;
+
+//    private List<String> re
 
     public Peer(String peerId) {
         this.peerId = peerId;
@@ -149,5 +158,29 @@ public class Peer {
 
     public void setFilePieceMap(ConcurrentMap<Integer, byte[]> filePieceMap) {
         this.filePieceMap = filePieceMap;
+    }
+
+    public ConcurrentMap<String, Integer> getDownloadRateMap() {
+        return downloadRateMap;
+    }
+
+    public void setDownloadRateMap(ConcurrentMap<String, Integer> downloadRateMap) {
+        this.downloadRateMap = downloadRateMap;
+    }
+
+    public List<PeerInfo> getPeerInfoList() {
+        return peerInfoList;
+    }
+
+    public void setPeerInfoList(List<PeerInfo> peerInfoList) {
+        this.peerInfoList = peerInfoList;
+    }
+
+    public List<Integer> getRequestList() {
+        return requestList;
+    }
+
+    public void setRequestList(List<Integer> requestList) {
+        this.requestList = requestList;
     }
 }
