@@ -5,8 +5,21 @@ import edu.ufl.cise.cnt5106c.group8.enums.MessageTypeEnum;
 public class ActualMessage {
     private int messageLength;
 
+    /**
+     * 0. choke
+     * 1. unchoke
+     * 2. interested
+     * 3. not interested
+     * 4. have
+     * 5. bitfield
+     * 6. request
+     * 7. piece
+     */
     private MessageTypeEnum messageType;
 
+    /**
+     * Payload of actual message
+     */
     private String messagePayload;
 
     public ActualMessage(MessageTypeEnum messageType, String messagePayload) {

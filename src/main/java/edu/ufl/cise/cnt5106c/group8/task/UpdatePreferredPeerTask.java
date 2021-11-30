@@ -20,6 +20,7 @@ public class UpdatePreferredPeerTask extends TimerTask {
 
     @Override
     public void run() {
+        System.out.println(localPeer.getPeerId() + " is updating preferred peer list...");
         List<String> preferredPeerList = new ArrayList<>();
         int numberOfPreferredNeighbors = localPeer.getCommon().getNumberOfPreferredNeighbors();
         if (localPeer.isHasFile()) {

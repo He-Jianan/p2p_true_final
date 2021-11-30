@@ -16,33 +16,75 @@ public class Peer {
 
     private boolean hasFile;
 
+    /**
+     * Information of "Common.cfg"
+     */
     private Common common;
 
+    /**
+     * Connect status of neighbor peers
+     */
     private ConcurrentMap<String, Boolean> connectStatusMap;
 
+    /**
+     * Bitfield of local peer
+     */
     private char[] bitField;
 
+    /**
+     * Message queues of all peers
+     */
     private ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap;
 
+    /**
+     * Shows if remote peer has choked local peer
+     */
     private ConcurrentMap<String, Boolean> remoteChokeLocalMap;
 
+    /**
+     * Shows if remote peer is inrerested in local peer
+     */
     private ConcurrentMap<String, Boolean> remoteInterestedLocalMap;
 
+    /**
+     * The piece status in every neighbor peer
+     */
     private ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap;
 
+    /**
+     * Shows if local peer has choked remote peer
+     */
     private ConcurrentMap<String, Boolean> localChokeRemoteMap;
 
+    /**
+     * Shows if local peer is interested in remote peer
+     */
     private ConcurrentMap<String, Boolean> localInterestedRemoteMap;
 
+    /**
+     * Shows the pieces that local peer has
+     */
     private ConcurrentMap<Integer, byte[]> filePieceMap;
 
+    /**
+     * Download rate of neighbor peers
+     */
     private ConcurrentMap<String, Integer> downloadRateMap;
 
+    /**
+     * The basic information of neighbor peers
+     */
     private List<PeerInfo> peerInfoList;
 
+    /**
+     * The piece index that the local peer is requesting
+     */
     private List<Integer> requestList;
 
-//    private List<String> re
+    /**
+     * The piece index that the local peer is requesting before the timeout interval
+     */
+    private List<Integer> previousList;
 
     public Peer(String peerId) {
         this.peerId = peerId;
@@ -182,5 +224,13 @@ public class Peer {
 
     public void setRequestList(List<Integer> requestList) {
         this.requestList = requestList;
+    }
+
+    public List<Integer> getPreviousList() {
+        return previousList;
+    }
+
+    public void setPreviousList(List<Integer> previousList) {
+        this.previousList = previousList;
     }
 }

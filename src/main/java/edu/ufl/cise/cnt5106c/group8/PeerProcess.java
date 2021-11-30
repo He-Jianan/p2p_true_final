@@ -50,6 +50,8 @@ public class PeerProcess {
         peer.setDownloadRateMap(downloadRateMap);
         List<Integer> requestList = new ArrayList<>();
         peer.setRequestList(requestList);
+        List<Integer> previousList = new ArrayList<>();
+        peer.setPreviousList(previousList);
         for (PeerInfo peerInfo : peerInfoList) {
             LinkedBlockingQueue<MessageManager> messageQueue = new LinkedBlockingQueue<>();
             messageQueueMap.put(peerInfo.getPeerId(), messageQueue);
@@ -75,6 +77,9 @@ public class PeerProcess {
             }
 
             ConcurrentMap<Integer, Boolean> map = new ConcurrentHashMap<>();
+            for (int i = 0; i < common.getTotalPieces(); i++) {
+                map.put(i, false);
+            }
             pieceIndexMap.put(peerInfo.getPeerId(), map);
             peer.setPieceIndexMap(pieceIndexMap);
             remoteInterestedLocalMap.put(peerInfo.getPeerId(), false);

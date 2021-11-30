@@ -38,9 +38,4 @@ public class HandShakeMessage {
                 ", peerId='" + peerId + '\'' +
                 '}';
     }
-
-    public byte[] createHandShakeMessage() {
-        String handShakeMessage = HEADER + ZEROBITS + peerId;
-        return handShakeMessage.getBytes(StandardCharsets.UTF_8);
-    }
 }

@@ -2,6 +2,7 @@ package edu.ufl.cise.cnt5106c.group8.handler;
 
 import edu.ufl.cise.cnt5106c.group8.communication.SendCommunication;
 import edu.ufl.cise.cnt5106c.group8.enums.MessageTypeEnum;
+import edu.ufl.cise.cnt5106c.group8.manager.FileManager;
 import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 import edu.ufl.cise.cnt5106c.group8.model.ActualMessage;
 import edu.ufl.cise.cnt5106c.group8.model.HandShakeMessage;
@@ -15,12 +16,18 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageHandler{
+    /**
+     * message get from message queue
+     */
     private Object message;
 
     private String remotePeerId;
 
     private Peer localPeer;
 
+    /**
+     * judge the message is to send or has received
+     */
     private boolean isFromRemote;
 
     public MessageHandler(Object message, String remotePeerId, Peer localPeer, boolean isFromRemote) {
@@ -131,6 +138,7 @@ public class MessageHandler{
         ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = localPeer.getPieceIndexMap();
         ConcurrentMap<Integer, Boolean> map = pieceIndexMap.get(remotePeerId);
         map.put(pieceIndex, true);
+        pieceIndexMap.put(remotePeerId, map);
         localPeer.setPieceIndexMap(pieceIndexMap);
         if (!localPeer.getLocalInterestedRemoteMap().get(remotePeerId) && localPeer.getBitField()[pieceIndex] == '0') {
             ConcurrentMap<String, Boolean> localInterestedRemoteMap = localPeer.getLocalInterestedRemoteMap();
@@ -164,6 +172,7 @@ public class MessageHandler{
     }
 
     public void handlePieceMessage(ActualMessage message) {
+        System.out.println(localPeer + " received piece message from " + remotePeerId);
         PieceMessage pieceMessage = (PieceMessage) message;
         String rawIndex = pieceMessage.getIndex();
         int index = Integer.parseInt(rawIndex);
@@ -191,8 +200,30 @@ public class MessageHandler{
             String remoteId = entry.getKey();
             if ((!currChokeMap.get(remoteId)) && (currConnMap.get(remoteId))) {
                 messageQueueMap.get(remoteId).add(new MessageManager(new ActualMessage(MessageTypeEnum.HAVE, rawIndex), false));
+                localPeer.setMessageQueueMap(messageQueueMap);
             }
         }
+
+        if (hasCompleteFile(bitField)) {
+            try {
+                FileManager.assembleFile(filePieceMap, "thefile");
+                localPeer.setHasFile(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private boolean hasCompleteFile(char[] bitField) {
+        int totalPieces = localPeer.getCommon().getTotalPieces();
+        for (int i = 0; i < totalPieces; i++) {
+            if (bitField[i] == '0') {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

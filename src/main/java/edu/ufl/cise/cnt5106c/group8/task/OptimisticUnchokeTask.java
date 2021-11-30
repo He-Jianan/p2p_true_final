@@ -23,6 +23,7 @@ public class OptimisticUnchokeTask extends TimerTask {
 
     @Override
     public void run() {
+        System.out.println(localPeer.getPeerId() + " is unchoking optismistic peer....");
         List<String> chokedPeerList = new ArrayList<>();
         ConcurrentMap<String, Boolean> localChokeRemoteMap = localPeer.getLocalChokeRemoteMap();
         ConcurrentMap<String, Boolean> remoteInterestedLocalMap = localPeer.getRemoteInterestedLocalMap();

@@ -3,6 +3,8 @@ package edu.ufl.cise.cnt5106c.group8.manager;
 
 import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.task.OptimisticUnchokeTask;
+import edu.ufl.cise.cnt5106c.group8.task.RequestTimeoutTask;
+import edu.ufl.cise.cnt5106c.group8.task.TerminationTask;
 import edu.ufl.cise.cnt5106c.group8.task.UpdatePreferredPeerTask;
 
 import java.util.Timer;
@@ -20,12 +22,18 @@ public class ChoiceManager extends Thread{
     public void run() {
         Timer updatePreferredPeerTimer = new Timer();
         Timer optimisticUnchokeTimer = new Timer();
+        Timer requestTimeoutTimer = new Timer();
+        Timer terminationTimer = new Timer();
 
         TimerTask updatePreferredPeerTask = new UpdatePreferredPeerTask(localPeer);
         TimerTask optimisticUnchokeTask = new OptimisticUnchokeTask(localPeer);
+        TimerTask requestTimeoutTask = new RequestTimeoutTask(localPeer);
+        TimerTask terminationTask = new TerminationTask(localPeer);
 
-        updatePreferredPeerTimer.schedule(updatePreferredPeerTask, localPeer.getCommon().getUnchokingInterval() * 1000L);
-        optimisticUnchokeTimer.schedule(optimisticUnchokeTask, localPeer.getCommon().getOptimisticUnchokingInterval() * 1000L);
+        updatePreferredPeerTimer.schedule(updatePreferredPeerTask, 1000, localPeer.getCommon().getUnchokingInterval() * 1000L);
+        optimisticUnchokeTimer.schedule(optimisticUnchokeTask, 1000, localPeer.getCommon().getOptimisticUnchokingInterval() * 1000L);
+        requestTimeoutTimer.schedule(requestTimeoutTask, 0, 10000);
+        terminationTimer.schedule(terminationTask, 0, 20000);
     }
 
 
