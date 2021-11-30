@@ -29,34 +29,45 @@ public class PeerProcess {
             peerId = "1001";
         }
         Common common = CommonReader.read("Common-dev.cfg");
-        List<PeerInfo> peerInfoList = PeerInfoReader.read("PeerInfo-dev.cfg");
+        List<PeerInfo> allPeerInfoList = PeerInfoReader.read("PeerInfo-dev.cfg");
         Peer peer = new Peer(peerId);
         peer.setCommon(common);
         ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = new ConcurrentHashMap<>();
         peer.setMessageQueueMap(messageQueueMap);
+
         ConcurrentMap<String, Boolean> connectStatusMap = new ConcurrentHashMap<>();
         peer.setConnectStatusMap(connectStatusMap);
+
         ConcurrentHashMap<String, Boolean> remoteChokeLocalMap = new ConcurrentHashMap<>();
         peer.setRemoteChokeLocalMap(remoteChokeLocalMap);
+
         ConcurrentHashMap<String, Boolean> remoteInterestedLocalMap = new ConcurrentHashMap<>();
         peer.setRemoteInterestedLocalMap(remoteInterestedLocalMap);
+
         ConcurrentHashMap<String, Boolean> localChokeRemoteMap = new ConcurrentHashMap<>();
         peer.setLocalChokeRemoteMap(localChokeRemoteMap);
+
         ConcurrentHashMap<String, Boolean> localInterestedRemoteMap = new ConcurrentHashMap<>();
         peer.setLocalInterestedRemoteMap(localInterestedRemoteMap);
+
         ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = new ConcurrentHashMap<>();
         peer.setPieceIndexMap(pieceIndexMap);
+
         ConcurrentMap<String, Integer> downloadRateMap = new ConcurrentHashMap<>();
         peer.setDownloadRateMap(downloadRateMap);
+
         List<Integer> requestList = new ArrayList<>();
         peer.setRequestList(requestList);
+
         List<Integer> previousList = new ArrayList<>();
         peer.setPreviousList(previousList);
-        for (PeerInfo peerInfo : peerInfoList) {
+
+        List<PeerInfo> peerInfoList = new ArrayList<>();
+        for (PeerInfo peerInfo : allPeerInfoList) {
+
             LinkedBlockingQueue<MessageManager> messageQueue = new LinkedBlockingQueue<>();
             messageQueueMap.put(peerInfo.getPeerId(), messageQueue);
             peer.setMessageQueueMap(messageQueueMap);
-
 
             if (peerInfo.getPeerId().equals(peerId)) {
                 peer.setHostname(peerInfo.getHostname());
@@ -72,14 +83,28 @@ public class PeerProcess {
                     Arrays.fill(bitField, '0');
                 }
                 peer.setBitField(bitField);
-                peerInfoList.remove(peerInfo);
-                continue;
+            } else {
+                peerInfoList.add(peerInfo);
             }
 
+
+
+        }
+        for (PeerInfo peerInfo : peerInfoList) {
+
+
+
             ConcurrentMap<Integer, Boolean> map = new ConcurrentHashMap<>();
-            for (int i = 0; i < common.getTotalPieces(); i++) {
-                map.put(i, false);
+            if (peerInfo.isHasFile()) {
+                for (int i = 0; i < peer.getCommon().getTotalPieces(); i++) {
+                    map.put(i, true);
+                }
+            } else {
+                for (int i = 0; i < peer.getCommon().getTotalPieces(); i++) {
+                    map.put(i, false);
+                }
             }
+
             pieceIndexMap.put(peerInfo.getPeerId(), map);
             peer.setPieceIndexMap(pieceIndexMap);
             remoteInterestedLocalMap.put(peerInfo.getPeerId(), false);
@@ -92,6 +117,9 @@ public class PeerProcess {
             peer.setLocalInterestedRemoteMap(localInterestedRemoteMap);
             downloadRateMap.put(peerInfo.getPeerId(), 0);
             peer.setDownloadRateMap(downloadRateMap);
+
+            connectStatusMap.put(peerInfo.getPeerId(), false);
+            peer.setConnectStatusMap(connectStatusMap);
         }
         peer.setPeerInfoList(peerInfoList);
 

@@ -32,9 +32,12 @@ public class UpdatePreferredPeerTask extends TimerTask {
             }
             Collections.shuffle(interestedPeerIdList);
             int index = 0;
-            while (preferredPeerList.size() < numberOfPreferredNeighbors) {
-                preferredPeerList.add(interestedPeerIdList.get(index));
-                index++;
+//            while (preferredPeerList.size() < numberOfPreferredNeighbors) {
+//                preferredPeerList.add(interestedPeerIdList.get(index));
+//                index++;
+//            }
+            for (int i = 0; i < Math.min(numberOfPreferredNeighbors, localPeer.getPeerInfoList().size()); i++) {
+                preferredPeerList.add(interestedPeerIdList.get(i));
             }
         } else {
             ConcurrentMap<String, Integer> downloadRateMap = localPeer.getDownloadRateMap();
