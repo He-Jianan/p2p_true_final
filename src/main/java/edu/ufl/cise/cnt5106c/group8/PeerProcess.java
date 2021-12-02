@@ -74,10 +74,9 @@ public class PeerProcess{
                 peer.setHostname(peerInfo.getHostname());
                 peer.setPort(peerInfo.getPort());
                 peer.setHasFile(peerInfo.isHasFile());
-                char[] bitField = new char[peer.getCommon().getTotalLength()];
+                char[] bitField = new char[peer.getCommon().getTotalPieces()];
                 if (peer.isHasFile()) {
-                    Arrays.fill(bitField, 0, peer.getCommon().getTotalPieces(), '1');
-                    Arrays.fill(bitField, peer.getCommon().getTotalPieces(), peer.getCommon().getTotalLength(), '0');
+                    Arrays.fill(bitField, '1');
                     ConcurrentMap<Integer, byte[]> filePieceMap = FileManager.file2Piece(peer.getCommon().getFileName(), peer.getCommon().getPieceSize());
                     peer.setFilePieceMap(filePieceMap);
                 } else {
