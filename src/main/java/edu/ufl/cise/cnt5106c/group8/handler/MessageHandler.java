@@ -174,7 +174,7 @@ public class MessageHandler{
     public void handleRequestMessage(ActualMessage message) {
         String payload = message.getMessagePayload();
         int requestIndex = Integer.parseInt(payload);
-        System.out.println(remotePeerId + "is requesting for piece with index " + requestIndex);
+        System.out.println(remotePeerId + " is requesting for piece with index " + requestIndex);
         if (!localPeer.getLocalChokeRemoteMap().get(remotePeerId)) {
             ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
             messageQueueMap.get(remotePeerId).add(new MessageManager(new PieceMessage(MessageTypeEnum.PIECE, new String(localPeer.getFilePieceMap().get(requestIndex)), String.valueOf(requestIndex)), false));

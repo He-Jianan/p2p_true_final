@@ -57,7 +57,7 @@ public class PeerProcess{
         ConcurrentMap<String, Integer> downloadRateMap = new ConcurrentHashMap<>();
         peer.setDownloadRateMap(downloadRateMap);
 
-        List<Integer> requestList = new ArrayList<>();
+        List<Integer> requestList = Collections.synchronizedList(new ArrayList<>());
         peer.setRequestList(requestList);
 
         List<Integer> previousList = new ArrayList<>();
