@@ -10,6 +10,15 @@ public class PeerInfo{
 
     private boolean hasFile;
 
+    public PeerInfo() {
+    }
+
+    public PeerInfo(String peerId, String hostname, int port) {
+        PeerId = peerId;
+        this.hostname = hostname;
+        this.port = port;
+    }
+
     public String getPeerId() {
         return PeerId;
     }

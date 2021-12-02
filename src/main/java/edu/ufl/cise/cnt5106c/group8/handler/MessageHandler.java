@@ -78,7 +78,7 @@ public class MessageHandler{
         }
     }
 
-    public void handleHandshakeMessage(HandShakeMessage message) throws InterruptedException {
+    private void handleHandshakeMessage(HandShakeMessage message) throws InterruptedException {
         System.out.println(localPeer.getPeerId() + " is handling handshake message from " + remotePeerId);
         if (message.getPeerId().equals(remotePeerId) && message.getHEADER().equals("P2PFILESHARINGPROJ")) {
             if (localPeer.isHasFile()) {
@@ -86,19 +86,20 @@ public class MessageHandler{
                 MessageManager messageManager = new MessageManager(bitFieldMessage, false);
                 ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
                 messageQueueMap.get(remotePeerId).put(messageManager);
+                System.out.println(localPeer.getPeerId() + " is sending bitfield message to " + remotePeerId);
                 localPeer.setMessageQueueMap(messageQueueMap);
             }
         }
     }
 
-    public void handleChokeMessage(ActualMessage message) {
+    private void handleChokeMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " is choked by " + remotePeerId);
         ConcurrentMap<String, Boolean> chokeMap = localPeer.getRemoteChokeLocalMap();
         chokeMap.put(remotePeerId, true);
         localPeer.setRemoteChokeLocalMap(chokeMap);
     }
 
-    public void handleUnChokeMessage(ActualMessage message) {
+    private void handleUnChokeMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " is unChoked by " + remotePeerId);
         ConcurrentMap<String, Boolean> chokeMap = localPeer.getRemoteChokeLocalMap();
         chokeMap.put(remotePeerId, false);
@@ -124,21 +125,21 @@ public class MessageHandler{
     }
 
 
-    public void handleInterestedMessage(ActualMessage message) {
+    private void handleInterestedMessage(ActualMessage message) {
         System.out.println(remotePeerId + " is interested in " + localPeer.getPeerId());
         ConcurrentMap<String, Boolean> interestMap = localPeer.getRemoteInterestedLocalMap();
         interestMap.put(remotePeerId, true);
         localPeer.setRemoteInterestedLocalMap(interestMap);
     }
 
-    public void handleNotInterestedMessage(ActualMessage message) {
+    private void handleNotInterestedMessage(ActualMessage message) {
         System.out.println(remotePeerId + " is not interested in " + localPeer.getPeerId());
         ConcurrentMap<String, Boolean> interestMap = localPeer.getRemoteInterestedLocalMap();
         interestMap.put(remotePeerId, false);
         localPeer.setRemoteInterestedLocalMap(interestMap);
     }
 
-    public void handleHaveMessage(ActualMessage message) {
+    private void handleHaveMessage(ActualMessage message) {
         int pieceIndex = Integer.parseInt(message.getMessagePayload());
         System.out.println(remotePeerId + " has piece with index: " + pieceIndex);
         ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = localPeer.getPieceIndexMap();
@@ -156,8 +157,8 @@ public class MessageHandler{
         }
     }
 
-    public void handleBitfieldMessage(ActualMessage message) {
-        System.out.println(localPeer.getPeerId() + " received bitfieldMessage from " + remotePeerId);
+    private void handleBitfieldMessage(ActualMessage message) {
+        System.out.println(localPeer.getPeerId() + " has received bitfield message from " + remotePeerId);
         String payload = message.getMessagePayload();
         char[] bitField = payload.toCharArray();
         for (int i = 0; i < bitField.length; i++) {
@@ -172,7 +173,7 @@ public class MessageHandler{
         }
     }
 
-    public void handleRequestMessage(ActualMessage message) {
+    private void handleRequestMessage(ActualMessage message) {
         String payload = message.getMessagePayload();
         int requestIndex = Integer.parseInt(payload);
         System.out.println(remotePeerId + " is requesting for piece with index " + requestIndex);
@@ -184,7 +185,7 @@ public class MessageHandler{
         }
     }
 
-    public void handlePieceMessage(ActualMessage message) {
+    private void handlePieceMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " received piece message from " + remotePeerId);
         PieceMessage pieceMessage = (PieceMessage) message;
         String rawIndex = pieceMessage.getIndex();
