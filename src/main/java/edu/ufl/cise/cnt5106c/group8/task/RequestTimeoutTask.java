@@ -22,6 +22,7 @@ public class RequestTimeoutTask extends TimerTask {
             for (int index : previousList) {
                 if (requestList.contains(index)) {
                     requestList.remove(index);
+                    localPeer.setRequestList(requestList);
                 }
             }
         }
