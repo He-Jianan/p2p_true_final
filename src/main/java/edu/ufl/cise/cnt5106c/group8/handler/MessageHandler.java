@@ -108,7 +108,7 @@ public class MessageHandler{
 
     private void handleUnChokeMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " is unChoked by " + remotePeerId);
-        logger.info("Peer [" + localPeer.getPeerId() + "] is unchoked by [" + remotePeerId + "].");
+        logger.info("Peer [" + localPeer.getPeerId() + "] is unchoked by [" + remotePeerId + "]");
         ConcurrentMap<String, Boolean> chokeMap = localPeer.getRemoteChokeLocalMap();
         chokeMap.put(remotePeerId, false);
         localPeer.setRemoteChokeLocalMap(chokeMap);
@@ -125,6 +125,8 @@ public class MessageHandler{
                     System.out.println(idx + " is added into request list");
                     localPeer.setRequestList(requestList);
                     messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(idx)), false));
+                    logger.info("Peer [" + localPeer.getPeerId() + "] is sending request message to [" + remotePeerId + "] for index [" + idx + "]");
+                    localPeer.setMessageQueueMap(messageQueueMap);
                     System.out.println(localPeer.getPeerId() + " is requesting file piece with index: " + idx);
                     break;
                 }
@@ -188,6 +190,7 @@ public class MessageHandler{
     private void handleRequestMessage(ActualMessage message) {
         String payload = message.getMessagePayload();
         int requestIndex = Integer.parseInt(payload);
+        logger.info("Peer [" + localPeer.getPeerId() + "] received the ‘request’ message from [" + remotePeerId + "] for index [" + requestIndex + "]");
         System.out.println(remotePeerId + " is requesting for piece with index " + requestIndex);
         if (!localPeer.getLocalChokeRemoteMap().get(remotePeerId)) {
             ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
@@ -236,6 +239,8 @@ public class MessageHandler{
                     System.out.println(i + " is added into request list");
                     messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(i)), false));
                     System.out.println(localPeer.getPeerId() + " is requesting file piece with index: " + i);
+                    logger.info("Peer [" + localPeer.getPeerId() + "] is sending request message to [" + remotePeerId + "] for index [" + i + "]");
+
                 }
             }
         }
