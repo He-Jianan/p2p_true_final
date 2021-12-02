@@ -211,7 +211,7 @@ public class MessageHandler{
         ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = localPeer.getPieceIndexMap();
         ConcurrentMap<Integer, Boolean> currRemoteMap = pieceIndexMap.get(remotePeerId);
 
-        requestList.remove(index);
+        requestList.remove(new Integer(index));
         System.out.println(index + " is removed from request list");
         localPeer.setRequestList(requestList);
 
