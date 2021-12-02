@@ -82,6 +82,11 @@ public class PeerProcess{
                     peer.setFilePieceMap(filePieceMap);
                 } else {
                     Arrays.fill(bitField, '0');
+                    ConcurrentMap<Integer, byte[]> filePieceMap = new ConcurrentHashMap<>();
+                    for (int i = 0; i < peer.getCommon().getTotalPieces(); i++) {
+                        filePieceMap.put(i, null);
+                    }
+                    peer.setFilePieceMap(filePieceMap);
                 }
                 peer.setBitField(bitField);
             } else {

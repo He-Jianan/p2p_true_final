@@ -157,7 +157,7 @@ public class MessageHandler{
     }
 
     public void handleBitfieldMessage(ActualMessage message) {
-        System.out.println(localPeer + " received bitfieldMessage from " + remotePeerId);
+        System.out.println(localPeer.getPeerId() + " received bitfieldMessage from " + remotePeerId);
         String payload = message.getMessagePayload();
         char[] bitField = payload.toCharArray();
         for (int i = 0; i < bitField.length; i++) {
@@ -185,7 +185,7 @@ public class MessageHandler{
     }
 
     public void handlePieceMessage(ActualMessage message) {
-        System.out.println(localPeer + " received piece message from " + remotePeerId);
+        System.out.println(localPeer.getPeerId() + " received piece message from " + remotePeerId);
         PieceMessage pieceMessage = (PieceMessage) message;
         String rawIndex = pieceMessage.getIndex();
         int index = Integer.parseInt(rawIndex);
