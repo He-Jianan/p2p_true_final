@@ -87,13 +87,8 @@ public class PeerProcess{
             } else {
                 peerInfoList.add(peerInfo);
             }
-
-
-
         }
         for (PeerInfo peerInfo : peerInfoList) {
-
-
 
             ConcurrentMap<Integer, Boolean> map = new ConcurrentHashMap<>();
             if (peerInfo.isHasFile()) {

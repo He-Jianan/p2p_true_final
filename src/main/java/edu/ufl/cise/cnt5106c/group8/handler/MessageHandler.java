@@ -79,6 +79,7 @@ public class MessageHandler{
     }
 
     public void handleHandshakeMessage(HandShakeMessage message) throws InterruptedException {
+        System.out.println(localPeer.getPeerId() + " is handling handshake message from " + remotePeerId);
         if (message.getPeerId().equals(remotePeerId) && message.getHEADER().equals("P2PFILESHARINGPROJ")) {
             if (localPeer.isHasFile()) {
                 ActualMessage bitFieldMessage = new ActualMessage(MessageTypeEnum.BITFIELD, String.valueOf(localPeer.getBitField()));
@@ -114,6 +115,7 @@ public class MessageHandler{
                     requestList.add(idx);
                     localPeer.setRequestList(requestList);
                     messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(idx)), false));
+                    System.out.println(localPeer.getPeerId() + " is requesting file piece with index: " + idx);
                     break;
                 }
             }
@@ -148,6 +150,8 @@ public class MessageHandler{
             localInterestedRemoteMap.put(remotePeerId, true);
             ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
             messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.INTERESTED, null), false));
+            System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
+            localPeer.setMessageQueueMap(messageQueueMap);
         }
     }
 
@@ -161,6 +165,8 @@ public class MessageHandler{
                 localInterestedRemoteMap.put(remotePeerId, true);
                 ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
                 messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.INTERESTED, null), false));
+                System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
+                localPeer.setMessageQueueMap(messageQueueMap);
             }
         }
     }
@@ -168,9 +174,12 @@ public class MessageHandler{
     public void handleRequestMessage(ActualMessage message) {
         String payload = message.getMessagePayload();
         int requestIndex = Integer.parseInt(payload);
+        System.out.println(remotePeerId + "is requesting for piece with index " + requestIndex);
         if (!localPeer.getLocalChokeRemoteMap().get(remotePeerId)) {
             ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
-            messageQueueMap.get(remotePeerId).add(new MessageManager(new PieceMessage(MessageTypeEnum.PIECE, localPeer.getPieceIndexMap().get(String.valueOf(requestIndex)).toString(), String.valueOf(requestIndex)), false));
+            messageQueueMap.get(remotePeerId).add(new MessageManager(new PieceMessage(MessageTypeEnum.PIECE, new String(localPeer.getFilePieceMap().get(requestIndex)), String.valueOf(requestIndex)), false));
+            System.out.println(localPeer.getPeerId() + " is sending file piece with index " + requestIndex + " to " + remotePeerId);
+            localPeer.setMessageQueueMap(messageQueueMap);
         }
     }
 
@@ -209,6 +218,7 @@ public class MessageHandler{
                 if (!requestList.contains(i)) {
                     requestList.add(i);
                     messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(i)), false));
+                    System.out.println(localPeer.getPeerId() + " is requesting file piece with index: " + i);
                 }
             }
         }
@@ -217,12 +227,14 @@ public class MessageHandler{
             String remoteId = entry.getKey();
             if ((!currChokeMap.get(remoteId)) && (currConnMap.get(remoteId))) {
                 messageQueueMap.get(remoteId).add(new MessageManager(new ActualMessage(MessageTypeEnum.HAVE, rawIndex), false));
+                System.out.println(localPeer.getPeerId() + " is sending [HAVE] message to " + remoteId);
                 localPeer.setMessageQueueMap(messageQueueMap);
             }
         }
 
-        if (hasCompleteFile(bitField)) {
+        if (hasCompleteFile(bitField) && !localPeer.isHasFile()) {
             try {
+                System.out.println(localPeer.getPeerId() + " has the completed file. Now start to assemble file");
                 FileManager.assembleFile(filePieceMap, localPeer.getCommon().getFileName());
                 localPeer.setHasFile(true);
             } catch (IOException e) {
