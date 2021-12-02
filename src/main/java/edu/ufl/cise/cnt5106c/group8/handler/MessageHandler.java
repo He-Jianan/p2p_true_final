@@ -44,7 +44,7 @@ public class MessageHandler{
                 HandShakeMessage handShakeMessage = (HandShakeMessage) message;
                 System.out.println("Handling the handshake message from " + remotePeerId + " to " + localPeer.getPeerId());
                 handleHandshakeMessage(handShakeMessage);
-            } else if (message.getClass().equals(ActualMessage.class)) {
+            } else if (message instanceof ActualMessage) {
                 ActualMessage actualMessage = (ActualMessage) message;
                 switch (actualMessage.getMessageType()) {
                     case CHOKE:
