@@ -160,6 +160,8 @@ public class MessageHandler{
         map.put(pieceIndex, true);
         pieceIndexMap.put(remotePeerId, map);
         localPeer.setPieceIndexMap(pieceIndexMap);
+        logger.info("Peer [" + localPeer.getPeerId() + "] has update the bitfield of Peer [" + remotePeerId + "]");
+
         if (!localPeer.getLocalInterestedRemoteMap().get(remotePeerId) && localPeer.getBitField()[pieceIndex] == '0') {
             ConcurrentMap<String, Boolean> localInterestedRemoteMap = localPeer.getLocalInterestedRemoteMap();
             localInterestedRemoteMap.put(remotePeerId, true);
