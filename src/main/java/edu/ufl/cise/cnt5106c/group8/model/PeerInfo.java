@@ -1,6 +1,7 @@
 package edu.ufl.cise.cnt5106c.group8.model;
 
-public class PeerInfo {
+
+public class PeerInfo{
     private String PeerId;
 
     private String hostname;

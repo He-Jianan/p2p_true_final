@@ -2,7 +2,11 @@ package edu.ufl.cise.cnt5106c.group8.model;
 
 import edu.ufl.cise.cnt5106c.group8.enums.MessageTypeEnum;
 
-public class ActualMessage {
+import java.io.Serializable;
+
+public class ActualMessage implements Serializable {
+    private static final long serialVersionUID = 8983558202217591746L;
+
     private int messageLength;
 
     /**

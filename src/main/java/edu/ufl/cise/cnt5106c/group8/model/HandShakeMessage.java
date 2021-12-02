@@ -1,9 +1,12 @@
 package edu.ufl.cise.cnt5106c.group8.model;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class HandShakeMessage {
+public class HandShakeMessage implements Serializable {
+    private static final long serialVersionUID = 42L;
+
     private final String HEADER = "P2PFILESHARINGPROJ";
 
     private final byte[] ZEROBITS = new byte[10];

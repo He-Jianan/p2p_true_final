@@ -1,5 +1,6 @@
 package edu.ufl.cise.cnt5106c.group8.communication;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import edu.ufl.cise.cnt5106c.group8.handler.MessageHandler;
 import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 import edu.ufl.cise.cnt5106c.group8.model.Peer;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class SendCommunication extends Thread{
+
     private Socket socket;
 
     private String remotePeerId;

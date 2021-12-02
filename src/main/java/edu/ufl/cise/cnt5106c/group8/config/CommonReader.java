@@ -4,7 +4,7 @@ import edu.ufl.cise.cnt5106c.group8.model.Common;
 
 import java.io.*;
 
-public class CommonReader {
+public class CommonReader{
     public static Common read(String fileName) {
         try {
             File file = new File("src/main/resources/config/" + fileName);

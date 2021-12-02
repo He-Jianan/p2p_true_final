@@ -2,6 +2,7 @@ package edu.ufl.cise.cnt5106c.group8.model;
 
 import edu.ufl.cise.cnt5106c.group8.enums.MessageTypeEnum;
 
+
 public class PieceMessage extends ActualMessage{
     private String index;
 

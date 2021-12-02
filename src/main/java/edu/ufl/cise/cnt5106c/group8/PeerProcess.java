@@ -13,6 +13,7 @@ import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.model.PeerInfo;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class PeerProcess {
+public class PeerProcess{
     public static void main(String[] args) throws IOException {
         String peerId;
         if (args.length != 0) {

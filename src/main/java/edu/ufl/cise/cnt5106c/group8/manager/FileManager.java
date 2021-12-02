@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class FileManager {
+public class FileManager{
     public static ConcurrentMap<Integer, byte[]> file2Piece(String filename, int pieceSize) throws IOException {
         File file = new File("src/main/resources/" + filename);
         FileInputStream fileInputStream = new FileInputStream(file);

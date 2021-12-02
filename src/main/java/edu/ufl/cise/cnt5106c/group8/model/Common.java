@@ -1,6 +1,8 @@
 package edu.ufl.cise.cnt5106c.group8.model;
 
-public class Common {
+import java.io.Serializable;
+
+public class Common implements Serializable {
     private int numberOfPreferredNeighbors;
 
     private int unchokingInterval;

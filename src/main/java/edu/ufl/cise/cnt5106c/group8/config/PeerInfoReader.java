@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeerInfoReader {
+public class PeerInfoReader{
     public static List<PeerInfo> read(String fileName) throws IOException {
         File file = new File("src/main/resources/config/" + fileName);
         InputStream in = new FileInputStream(file);

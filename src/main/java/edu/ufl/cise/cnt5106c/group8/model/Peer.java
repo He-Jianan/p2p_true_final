@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Peer {
+public class Peer{
     private String peerId;
 
     private String hostname;

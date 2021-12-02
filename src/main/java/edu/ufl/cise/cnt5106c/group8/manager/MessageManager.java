@@ -1,6 +1,7 @@
 package edu.ufl.cise.cnt5106c.group8.manager;
 
-public class MessageManager {
+
+public class MessageManager{
     private Object message;
 
     private boolean fromRemote;

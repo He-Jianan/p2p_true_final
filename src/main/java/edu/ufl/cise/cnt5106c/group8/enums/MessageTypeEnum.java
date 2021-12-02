@@ -1,6 +1,7 @@
 package edu.ufl.cise.cnt5106c.group8.enums;
 
-public enum MessageTypeEnum {
+
+public enum MessageTypeEnum{
     CHOKE(0),
 
     UNCHOKE(1),
