@@ -166,6 +166,7 @@ public class MessageHandler{
             ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
             messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.INTERESTED, null), false));
             System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
+            logger.info("Peer [" + localPeer.getPeerId() + "] is sending `interested` message to [" + remotePeerId + "]");
             localPeer.setMessageQueueMap(messageQueueMap);
         }
     }
@@ -181,6 +182,7 @@ public class MessageHandler{
                 localInterestedRemoteMap.put(remotePeerId, true);
                 ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
                 messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.INTERESTED, null), false));
+                logger.info("Peer [" + localPeer.getPeerId() + "] is sending `interested` message to [" + remotePeerId + "]");
                 System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
                 localPeer.setMessageQueueMap(messageQueueMap);
             }
@@ -196,6 +198,7 @@ public class MessageHandler{
             ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
             messageQueueMap.get(remotePeerId).add(new MessageManager(new PieceMessage(MessageTypeEnum.PIECE, new String(localPeer.getFilePieceMap().get(requestIndex)), String.valueOf(requestIndex)), false));
             System.out.println(localPeer.getPeerId() + " is sending file piece with index " + requestIndex + " to " + remotePeerId);
+            logger.info("Peer [" + localPeer.getPeerId() + "] is sending file piece with index[" + requestIndex + "] to [" + remotePeerId + "]");
             localPeer.setMessageQueueMap(messageQueueMap);
         }
     }
@@ -250,6 +253,7 @@ public class MessageHandler{
             if ((!currChokeMap.get(remoteId)) && (currConnMap.get(remoteId))) {
                 messageQueueMap.get(remoteId).add(new MessageManager(new ActualMessage(MessageTypeEnum.HAVE, rawIndex), false));
                 System.out.println(localPeer.getPeerId() + " is sending [HAVE] message to " + remoteId);
+                logger.info("Peer [" + localPeer.getPeerId() + "] is sending `have` message to [" + remotePeerId + "]");
                 localPeer.setMessageQueueMap(messageQueueMap);
             }
         }
