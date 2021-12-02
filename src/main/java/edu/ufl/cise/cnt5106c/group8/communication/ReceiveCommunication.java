@@ -36,6 +36,7 @@ public class ReceiveCommunication extends Thread{
                 messageQueueMap.get(remotePeerId).put(new MessageManager(message, true));
             } catch (Exception e) {
                 e.printStackTrace();
+                System.exit(0);
             }
 
         }
