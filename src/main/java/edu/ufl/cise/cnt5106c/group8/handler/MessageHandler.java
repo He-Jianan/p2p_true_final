@@ -85,6 +85,7 @@ public class MessageHandler{
 
     private void handleHandshakeMessage(HandShakeMessage message) throws InterruptedException {
         System.out.println(localPeer.getPeerId() + " is handling handshake message from " + remotePeerId);
+        logger.info("Peer [" + localPeer.getPeerId() + "] received handshake message from Peer [" + remotePeerId + "]");
         if (message.getPeerId().equals(remotePeerId) && message.getHEADER().equals("P2PFILESHARINGPROJ")) {
             if (localPeer.isHasFile()) {
                 ActualMessage bitFieldMessage = new ActualMessage(MessageTypeEnum.BITFIELD, String.valueOf(localPeer.getBitField()));
@@ -251,6 +252,7 @@ public class MessageHandler{
             try {
                 System.out.println(localPeer.getPeerId() + " has the completed file. Now start to assemble file");
                 FileManager.assembleFile(filePieceMap, localPeer.getCommon().getFileName());
+                logger.info("Peer [" + localPeer.getPeerId() + "] has downloaded the complete file.");
                 localPeer.setHasFile(true);
             } catch (IOException e) {
                 e.printStackTrace();

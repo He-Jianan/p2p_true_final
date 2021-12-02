@@ -134,7 +134,7 @@ public class PeerProcess{
         for (PeerInfo peerInfo : peerInfoList) {
             if (Integer.parseInt(peerInfo.getPeerId()) < Integer.parseInt(peerId)) {
                 System.out.println(peerId + " is making a connection with " + peerInfo.getPeerId());
-                logger.info("Peer [peer_ID " + peer.getPeerId() + "] makes a connection to Peer [peer_ID " + peerInfo.getPeerId() + "]");
+                logger.info("Peer [" + peer.getPeerId() + "] makes a TCP connection to Peer [" + peerInfo.getPeerId() + "]");
                 Socket socket = new Socket(peerInfo.getHostname(), peerInfo.getPort());
                 SendCommunication sendCommunication = new SendCommunication(socket, peerInfo.getPeerId(), peer, messageQueueMap);
                 sendCommunication.start();
@@ -142,6 +142,8 @@ public class PeerProcess{
                 receiveCommunication.start();
                 connectStatusMap.put(peerInfo.getPeerId(), true);
                 messageQueueMap.get(peerInfo.getPeerId()).add(new MessageManager(new HandShakeMessage(peerInfo.getPeerId()), false));
+                logger.info("Peer [" + peer.getPeerId() + "] is sending handshake message to Peer [" + peerInfo.getPeerId() + "]");
+                peer.setMessageQueueMap(messageQueueMap);
             }
         }
         messageQueueMap.put(peerId, new LinkedBlockingQueue<>());
@@ -153,8 +155,9 @@ public class PeerProcess{
             while (true) {
                 Socket socket = serverSocket.accept();
                 String remoteHostname = socket.getInetAddress().toString();
-                System.out.println(peerId + " received connection request from " + remoteHostname);
+                System.out.println(peerId + " received TCP connection request from " + remoteHostname);
                 String remotePeerId = String.valueOf(Integer.parseInt(peerId) + count);
+                logger.info("Peer [" + peer.getPeerId() + "] is connected from Peer [" + remotePeerId + "].");
                 SendCommunication sendCommunication = new SendCommunication(socket, remotePeerId, peer, messageQueueMap);
                 sendCommunication.start();
                 ReceiveCommunication receiveCommunication = new ReceiveCommunication(socket, remotePeerId, peer, messageQueueMap);
@@ -163,6 +166,7 @@ public class PeerProcess{
                 peer.setConnectStatusMap(connectStatusMap);
                 LinkedBlockingQueue<MessageManager> messageQueue = messageQueueMap.getOrDefault(remotePeerId, new LinkedBlockingQueue<>());
                 messageQueue.add(new MessageManager(new HandShakeMessage(remotePeerId), false));
+                logger.info("Peer [" + peer.getPeerId() + "] is sending handshake message to Peer [" + remotePeerId + "]");
                 messageQueueMap.put(remotePeerId, messageQueue);
                 peer.setMessageQueueMap(messageQueueMap);
                 count++;
