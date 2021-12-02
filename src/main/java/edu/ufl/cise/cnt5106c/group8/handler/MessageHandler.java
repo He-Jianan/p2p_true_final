@@ -91,7 +91,7 @@ public class MessageHandler{
                 ActualMessage bitFieldMessage = new ActualMessage(MessageTypeEnum.BITFIELD, String.valueOf(localPeer.getBitField()));
                 MessageManager messageManager = new MessageManager(bitFieldMessage, false);
                 ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
-                messageQueueMap.get(remotePeerId).put(messageManager);
+                messageQueueMap.get(remotePeerId).add(messageManager);
                 System.out.println(localPeer.getPeerId() + " is sending bitfield message to " + remotePeerId);
                 localPeer.setMessageQueueMap(messageQueueMap);
             }
@@ -170,6 +170,7 @@ public class MessageHandler{
 
     private void handleBitfieldMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " has received bitfield message from " + remotePeerId);
+        logger.info("Peer [" + localPeer.getPeerId() + "] received the ‘bitfield’ message from [" + remotePeerId + "]");
         String payload = message.getMessagePayload();
         char[] bitField = payload.toCharArray();
         for (int i = 0; i < bitField.length; i++) {
