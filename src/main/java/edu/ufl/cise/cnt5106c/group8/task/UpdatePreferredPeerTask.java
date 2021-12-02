@@ -5,12 +5,16 @@ import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 import edu.ufl.cise.cnt5106c.group8.model.ActualMessage;
 import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.model.PeerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class UpdatePreferredPeerTask extends TimerTask {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Peer localPeer;
 
@@ -31,7 +35,7 @@ public class UpdatePreferredPeerTask extends TimerTask {
                 interestedPeerIdList.add(interestedPeerId);
             }
             Collections.shuffle(interestedPeerIdList);
-            int index = 0;
+//            int index = 0;
 //            while (preferredPeerList.size() < numberOfPreferredNeighbors) {
 //                preferredPeerList.add(interestedPeerIdList.get(index));
 //                index++;
@@ -88,5 +92,7 @@ public class UpdatePreferredPeerTask extends TimerTask {
             }
         }
         System.out.println("The preferred peer list of " + localPeer.getPeerId() +  " is " + preferredPeerList);
+        logger.info("Peer [" + localPeer.getPeerId() + "] has the preferred neighbors " + preferredPeerList);
+
     }
 }

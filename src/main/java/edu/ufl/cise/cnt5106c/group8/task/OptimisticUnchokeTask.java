@@ -5,6 +5,8 @@ import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 import edu.ufl.cise.cnt5106c.group8.model.ActualMessage;
 import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.model.PeerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class OptimisticUnchokeTask extends TimerTask {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Peer localPeer;
 
@@ -44,6 +47,7 @@ public class OptimisticUnchokeTask extends TimerTask {
             localChokeRemoteMap.put(optimisticUnchokePeerId, false);
             localPeer.setLocalChokeRemoteMap(localChokeRemoteMap);
             System.out.println(optimisticUnchokePeerId + " is optimistically unchoked.");
+            logger.info("Peer [" + localPeer.getPeerId() + "] has the optimistically unchoked neighbor [" + optimisticUnchokePeerId + "]");
         }
     }
 }

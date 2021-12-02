@@ -11,6 +11,8 @@ import edu.ufl.cise.cnt5106c.group8.model.Common;
 import edu.ufl.cise.cnt5106c.group8.model.HandShakeMessage;
 import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.model.PeerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -22,7 +24,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PeerProcess{
+    static Logger logger = LoggerFactory.getLogger(PeerProcess.class);
     public static void main(String[] args) throws IOException {
+        final Logger logger = LoggerFactory.getLogger(PeerProcess.class);
         String peerId;
         if (args.length != 0) {
             peerId = args[0];
@@ -129,21 +133,15 @@ public class PeerProcess{
 
         for (PeerInfo peerInfo : peerInfoList) {
             if (Integer.parseInt(peerInfo.getPeerId()) < Integer.parseInt(peerId)) {
-                try {
-                    System.out.println(peerId + " is making a connection with " + peerInfo.getPeerId());
-                    Socket socket = new Socket(peerInfo.getHostname(), peerInfo.getPort());
-
-
-
-                    SendCommunication sendCommunication = new SendCommunication(socket, peerInfo.getPeerId(), peer, messageQueueMap);
-                    sendCommunication.start();
-                    ReceiveCommunication receiveCommunication = new ReceiveCommunication(socket, peerInfo.getPeerId(), peer, messageQueueMap);
-                    receiveCommunication.start();
-                    connectStatusMap.put(peerInfo.getPeerId(), true);
-                    messageQueueMap.get(peerInfo.getPeerId()).put(new MessageManager(new HandShakeMessage(peerInfo.getPeerId()), false));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(peerId + " is making a connection with " + peerInfo.getPeerId());
+                logger.info("Peer [peer_ID " + peer.getPeerId() + "] makes a connection to Peer [peer_ID " + peerInfo.getPeerId() + "]");
+                Socket socket = new Socket(peerInfo.getHostname(), peerInfo.getPort());
+                SendCommunication sendCommunication = new SendCommunication(socket, peerInfo.getPeerId(), peer, messageQueueMap);
+                sendCommunication.start();
+                ReceiveCommunication receiveCommunication = new ReceiveCommunication(socket, peerInfo.getPeerId(), peer, messageQueueMap);
+                receiveCommunication.start();
+                connectStatusMap.put(peerInfo.getPeerId(), true);
+                messageQueueMap.get(peerInfo.getPeerId()).add(new MessageManager(new HandShakeMessage(peerInfo.getPeerId()), false));
             }
         }
         messageQueueMap.put(peerId, new LinkedBlockingQueue<>());
@@ -164,8 +162,9 @@ public class PeerProcess{
                 connectStatusMap.put(remotePeerId, true);
                 peer.setConnectStatusMap(connectStatusMap);
                 LinkedBlockingQueue<MessageManager> messageQueue = messageQueueMap.getOrDefault(remotePeerId, new LinkedBlockingQueue<>());
-                messageQueue.put(new MessageManager(new HandShakeMessage(remotePeerId), false));
+                messageQueue.add(new MessageManager(new HandShakeMessage(remotePeerId), false));
                 messageQueueMap.put(remotePeerId, messageQueue);
+                peer.setMessageQueueMap(messageQueueMap);
                 count++;
             }
         } catch (Exception e) {

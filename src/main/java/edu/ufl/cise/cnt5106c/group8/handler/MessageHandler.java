@@ -8,6 +8,8 @@ import edu.ufl.cise.cnt5106c.group8.model.ActualMessage;
 import edu.ufl.cise.cnt5106c.group8.model.HandShakeMessage;
 import edu.ufl.cise.cnt5106c.group8.model.Peer;
 import edu.ufl.cise.cnt5106c.group8.model.PieceMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageHandler{
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * message get from message queue
      */
@@ -42,6 +46,7 @@ public class MessageHandler{
         if (isFromRemote) {
             if (message.getClass().equals(HandShakeMessage.class)) {
                 HandShakeMessage handShakeMessage = (HandShakeMessage) message;
+//                logger.info("test");
                 System.out.println("Handling the handshake message from " + remotePeerId + " to " + localPeer.getPeerId());
                 handleHandshakeMessage(handShakeMessage);
             } else if (message instanceof ActualMessage) {
@@ -94,6 +99,7 @@ public class MessageHandler{
 
     private void handleChokeMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " is choked by " + remotePeerId);
+        logger.info("Peer [" + localPeer.getPeerId() + "] is choked by [" + remotePeerId + "].");
         ConcurrentMap<String, Boolean> chokeMap = localPeer.getRemoteChokeLocalMap();
         chokeMap.put(remotePeerId, true);
         localPeer.setRemoteChokeLocalMap(chokeMap);
@@ -101,6 +107,7 @@ public class MessageHandler{
 
     private void handleUnChokeMessage(ActualMessage message) {
         System.out.println(localPeer.getPeerId() + " is unChoked by " + remotePeerId);
+        logger.info("Peer [" + localPeer.getPeerId() + "] is unchoked by [" + remotePeerId + "].");
         ConcurrentMap<String, Boolean> chokeMap = localPeer.getRemoteChokeLocalMap();
         chokeMap.put(remotePeerId, false);
         localPeer.setRemoteChokeLocalMap(chokeMap);
@@ -127,6 +134,7 @@ public class MessageHandler{
 
     private void handleInterestedMessage(ActualMessage message) {
         System.out.println(remotePeerId + " is interested in " + localPeer.getPeerId());
+        logger.info("Peer [" + localPeer.getPeerId() + "] received the ‘interested’ message from [" + remotePeerId + "].");
         ConcurrentMap<String, Boolean> interestMap = localPeer.getRemoteInterestedLocalMap();
         interestMap.put(remotePeerId, true);
         localPeer.setRemoteInterestedLocalMap(interestMap);
@@ -134,6 +142,7 @@ public class MessageHandler{
 
     private void handleNotInterestedMessage(ActualMessage message) {
         System.out.println(remotePeerId + " is not interested in " + localPeer.getPeerId());
+        logger.info("Peer [" + localPeer.getPeerId() + "] received the ‘not interested’ message from [" + remotePeerId + "].");
         ConcurrentMap<String, Boolean> interestMap = localPeer.getRemoteInterestedLocalMap();
         interestMap.put(remotePeerId, false);
         localPeer.setRemoteInterestedLocalMap(interestMap);
@@ -142,6 +151,7 @@ public class MessageHandler{
     private void handleHaveMessage(ActualMessage message) {
         int pieceIndex = Integer.parseInt(message.getMessagePayload());
         System.out.println(remotePeerId + " has piece with index: " + pieceIndex);
+        logger.info("Peer [" + localPeer.getPeerId() + "] received the ‘have’ message from [" + remotePeerId + "] for the piece [" + pieceIndex + "].");
         ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = localPeer.getPieceIndexMap();
         ConcurrentMap<Integer, Boolean> map = pieceIndexMap.get(remotePeerId);
         map.put(pieceIndex, true);
@@ -190,6 +200,7 @@ public class MessageHandler{
         PieceMessage pieceMessage = (PieceMessage) message;
         String rawIndex = pieceMessage.getIndex();
         int index = Integer.parseInt(rawIndex);
+        logger.info("Peer [" + localPeer.getPeerId() + "] has downloaded the piece [" + index + "] from [" + remotePeerId + "].");
         String currPiece = message.getMessagePayload();
         byte[] currBytes = currPiece.getBytes();
         ConcurrentMap<Integer, byte[]> filePieceMap = localPeer.getFilePieceMap();

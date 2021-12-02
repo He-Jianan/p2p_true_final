@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>　　　　
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">　　　　　
+        <file>src/main/resources/log/log_peer_[1001].log</file>
+        <append>true</append>　　　
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}]: %msg.%n</pattern>　　　　
+        </encoder>
+        <prudent>
+            true
+        </prudent>　　
+    </appender>　　　　　
+    <root level="INFO">　　　　
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
