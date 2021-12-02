@@ -18,11 +18,14 @@ public class RequestTimeoutTask extends TimerTask {
         System.out.println("Request time out check.....");
         List<Integer> previousList = localPeer.getPreviousList();
         List<Integer> requestList = localPeer.getRequestList();
-        for (int index : previousList) {
-            if (requestList.contains(index)) {
-                requestList.remove(index);
+        synchronized (requestList) {
+            for (int index : previousList) {
+                if (requestList.contains(index)) {
+                    requestList.remove(index);
+                }
             }
         }
+
         localPeer.setPreviousList(requestList);
     }
 }
