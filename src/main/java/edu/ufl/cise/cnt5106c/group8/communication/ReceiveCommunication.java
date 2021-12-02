@@ -36,7 +36,7 @@ public class ReceiveCommunication extends Thread{
                 messageQueueMap.get(remotePeerId).put(new MessageManager(message, true));
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Other peer has detected that every peer has the completed file. Now terminate the application.");
+                System.out.println("Other peer has detected that every peer has the completed file or disconnected from the system. Now terminate the application.");
                 System.exit(0);
             }
 
