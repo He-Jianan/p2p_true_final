@@ -113,6 +113,7 @@ public class MessageHandler{
             if (bitField[idx] == '0' && currBitField.getOrDefault(idx, Boolean.FALSE)) {
                 if (!requestList.contains(idx)) {
                     requestList.add(idx);
+                    System.out.println(idx + " is added into request list");
                     localPeer.setRequestList(requestList);
                     messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(idx)), false));
                     System.out.println(localPeer.getPeerId() + " is requesting file piece with index: " + idx);
@@ -211,12 +212,14 @@ public class MessageHandler{
         ConcurrentMap<Integer, Boolean> currRemoteMap = pieceIndexMap.get(remotePeerId);
 
         requestList.remove(index);
+        System.out.println(index + " is removed from request list");
         localPeer.setRequestList(requestList);
 
         for (int i = 0; i < bitField.length; ++ i) {
             if (bitField[i] == '0' && currRemoteMap.get(i)) {
                 if (!requestList.contains(i)) {
                     requestList.add(i);
+                    System.out.println(i + " is added into request list");
                     messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.REQUEST, String.valueOf(i)), false));
                     System.out.println(localPeer.getPeerId() + " is requesting file piece with index: " + i);
                 }

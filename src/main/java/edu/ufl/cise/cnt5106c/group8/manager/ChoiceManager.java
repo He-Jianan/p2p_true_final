@@ -32,7 +32,7 @@ public class ChoiceManager extends Thread{
 
         updatePreferredPeerTimer.schedule(updatePreferredPeerTask, 1000, localPeer.getCommon().getUnchokingInterval() * 1000L);
         optimisticUnchokeTimer.schedule(optimisticUnchokeTask, 1000, localPeer.getCommon().getOptimisticUnchokingInterval() * 1000L);
-        requestTimeoutTimer.schedule(requestTimeoutTask, 0, 10000);
+        requestTimeoutTimer.schedule(requestTimeoutTask, 0, 100000);
         terminationTimer.schedule(terminationTask, 0, 20000);
     }
 
