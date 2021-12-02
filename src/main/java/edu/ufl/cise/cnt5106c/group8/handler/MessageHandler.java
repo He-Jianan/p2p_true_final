@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MessageHandler{
+public class MessageHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -237,7 +237,7 @@ public class MessageHandler{
         System.out.println(index + " is removed from request list");
         localPeer.setRequestList(requestList);
 
-        for (int i = 0; i < bitField.length; ++ i) {
+        for (int i = 0; i < bitField.length; ++i) {
             if (bitField[i] == '0' && currRemoteMap.get(i)) {
                 if (!requestList.contains(i)) {
                     requestList.add(i);
@@ -252,12 +252,11 @@ public class MessageHandler{
 
         for (Map.Entry<String, Boolean> entry : currInterestMap.entrySet()) {
             String remoteId = entry.getKey();
-            if ((!currChokeMap.get(remoteId)) && (currConnMap.get(remoteId))) {
-                messageQueueMap.get(remoteId).add(new MessageManager(new ActualMessage(MessageTypeEnum.HAVE, rawIndex), false));
-                System.out.println(localPeer.getPeerId() + " is sending [HAVE] message to " + remoteId);
-                logger.info("Peer [" + localPeer.getPeerId() + "] is sending `have` message to [" + remotePeerId + "]");
-                localPeer.setMessageQueueMap(messageQueueMap);
-            }
+            messageQueueMap.get(remoteId).add(new MessageManager(new ActualMessage(MessageTypeEnum.HAVE, rawIndex), false));
+            System.out.println(localPeer.getPeerId() + " is sending [HAVE] message to " + remoteId);
+            logger.info("Peer [" + localPeer.getPeerId() + "] is sending `have` message to [" + remotePeerId + "]");
+            localPeer.setMessageQueueMap(messageQueueMap);
+
         }
 
         if (hasCompleteFile(bitField) && !localPeer.isHasFile()) {
