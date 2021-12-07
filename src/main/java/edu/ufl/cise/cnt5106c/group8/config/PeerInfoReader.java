@@ -8,8 +8,9 @@ import java.util.List;
 
 public class PeerInfoReader{
     public static List<PeerInfo> read(String fileName) throws IOException {
-        File file = new File("src/main/resources/config/" + fileName);
-        InputStream in = new FileInputStream(file);
+//        File file = new File("src/main/resources/config/" + fileName);
+//        InputStream in = new FileInputStream(file);
+        InputStream in = CommonReader.class.getClassLoader().getResourceAsStream("config/" + fileName);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String str;
         List<PeerInfo> peerList = new ArrayList<>();

@@ -7,8 +7,9 @@ import java.io.*;
 public class CommonReader{
     public static Common read(String fileName) {
         try {
-            File file = new File("src/main/resources/config/" + fileName);
-            InputStream in = new FileInputStream(file);
+//            File file = new File("src/main/resources/config/" + fileName);
+//            InputStream in = new FileInputStream(file);
+            InputStream in = CommonReader.class.getClassLoader().getResourceAsStream("config/" + fileName);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
             int numberOfPreferredNeighbors = 0;
             int unchokingInterval = 0;

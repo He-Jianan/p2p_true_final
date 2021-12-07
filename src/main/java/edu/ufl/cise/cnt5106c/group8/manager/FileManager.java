@@ -4,6 +4,7 @@ import edu.ufl.cise.cnt5106c.group8.config.CommonReader;
 import edu.ufl.cise.cnt5106c.group8.model.Common;
 
 import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,10 +12,18 @@ import java.util.concurrent.ConcurrentMap;
 
 public class FileManager{
     public static ConcurrentMap<Integer, byte[]> file2Piece(String filename, int pieceSize) throws IOException {
-        File file = new File("src/main/resources/" + filename);
+        File file = new File("./" + filename);
+//        URL url = FileManager.class.getClassLoader().getResource(filename);
+//        File file = new File(url.getFile());
+//        InputStream inputStream = FileManager.class.getClassLoader().getResourceAsStream(filename);
         FileInputStream fileInputStream = new FileInputStream(file);
+
+//        InputStream inputStream = FileManager.class.getClassLoader().getResourceAsStream("config/" + filename);
         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
         ConcurrentMap<Integer, byte[]> pieceMap = new ConcurrentHashMap<>();
+
         long fileLength = file.length();
         long savedLength = 0;
         int index = 0;
@@ -34,8 +43,8 @@ public class FileManager{
     }
 
     public static void assembleFile(ConcurrentMap<Integer, byte[]> indexPieceMap, String filename) throws IOException {
-        Common common = CommonReader.read("Common-dev.cfg");
-        File file = new File("src/main/resources/" + filename);
+        Common common = CommonReader.read("Common.cfg");
+        File file = new File("./" + filename);
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         for (int i = 0; i < common.getTotalPieces(); i++) {
             fileOutputStream.write(indexPieceMap.get(i));

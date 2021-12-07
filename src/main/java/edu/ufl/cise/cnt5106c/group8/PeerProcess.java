@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PeerProcess{
-    static Logger logger = LoggerFactory.getLogger(PeerProcess.class);
     public static void main(String[] args) throws IOException {
         final Logger logger = LoggerFactory.getLogger(PeerProcess.class);
         String peerId;
@@ -33,8 +32,8 @@ public class PeerProcess{
         } else{
             peerId = "1001";
         }
-        Common common = CommonReader.read("Common-dev.cfg");
-        List<PeerInfo> allPeerInfoList = PeerInfoReader.read("PeerInfo-dev.cfg");
+        Common common = CommonReader.read("Common.cfg");
+        List<PeerInfo> allPeerInfoList = PeerInfoReader.read("PeerInfo.cfg");
         Peer peer = new Peer(peerId);
         peer.setCommon(common);
         ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = new ConcurrentHashMap<>();

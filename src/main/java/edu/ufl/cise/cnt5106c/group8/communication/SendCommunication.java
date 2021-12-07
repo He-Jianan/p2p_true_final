@@ -1,6 +1,5 @@
 package edu.ufl.cise.cnt5106c.group8.communication;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import edu.ufl.cise.cnt5106c.group8.handler.MessageHandler;
 import edu.ufl.cise.cnt5106c.group8.manager.MessageManager;
 import edu.ufl.cise.cnt5106c.group8.model.Peer;

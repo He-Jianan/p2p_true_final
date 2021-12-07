@@ -170,6 +170,8 @@ public class MessageHandler {
             System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
             logger.info("Peer [" + localPeer.getPeerId() + "] is sending `interested` message to [" + remotePeerId + "]");
             localPeer.setMessageQueueMap(messageQueueMap);
+        } else {
+            logger.info(localPeer.getPeerId() + " is sending [not interested] message to " + remotePeerId);
         }
     }
 
@@ -178,17 +180,27 @@ public class MessageHandler {
         logger.info("Peer [" + localPeer.getPeerId() + "] received the ‘bitfield’ message from [" + remotePeerId + "]");
         String payload = message.getMessagePayload();
         char[] bitField = payload.toCharArray();
+        ConcurrentMap<String, ConcurrentMap<Integer, Boolean>> pieceIndexMap = localPeer.getPieceIndexMap();
+        boolean find = false;
         for (int i = 0; i < bitField.length; i++) {
-            if (bitField[i] == '1' && localPeer.getBitField()[i] == '0') {
-                ConcurrentMap<String, Boolean> localInterestedRemoteMap = localPeer.getLocalInterestedRemoteMap();
-                localInterestedRemoteMap.put(remotePeerId, true);
-                ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
-                messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.INTERESTED, null), false));
-                logger.info("Peer [" + localPeer.getPeerId() + "] is sending `interested` message to [" + remotePeerId + "]");
-                System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
-                localPeer.setMessageQueueMap(messageQueueMap);
+            if (bitField[i] == '1') {
+                pieceIndexMap.get(remotePeerId).put(i, true);
+                if (localPeer.getBitField()[i] == '0') {
+                    find = true;
+                    ConcurrentMap<String, Boolean> localInterestedRemoteMap = localPeer.getLocalInterestedRemoteMap();
+                    localInterestedRemoteMap.put(remotePeerId, true);
+                    ConcurrentMap<String, LinkedBlockingQueue<MessageManager>> messageQueueMap = localPeer.getMessageQueueMap();
+                    messageQueueMap.get(remotePeerId).add(new MessageManager(new ActualMessage(MessageTypeEnum.INTERESTED, null), false));
+                    logger.info("Peer [" + localPeer.getPeerId() + "] is sending `interested` message to [" + remotePeerId + "]");
+                    System.out.println(localPeer.getPeerId() + " is sending [interested] message to " + remotePeerId);
+                    localPeer.setMessageQueueMap(messageQueueMap);
+                }
             }
         }
+        if (!find) {
+            logger.info(localPeer.getPeerId() + " is sending [not interested] message to " + remotePeerId);
+        }
+        localPeer.setPieceIndexMap(pieceIndexMap);
     }
 
     private void handleRequestMessage(ActualMessage message) {
